@@ -1,6 +1,6 @@
 # Homework 12.1 Realize Infinite carousel:
 
-## Instal
+## Install
 
     * npm i 
 
