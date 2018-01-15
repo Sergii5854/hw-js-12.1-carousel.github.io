@@ -1,4 +1,4 @@
-# Homework 12.2 Realize Infinite carousel:
+# Homework 12.1 Realize Infinite carousel:
 
 ###  Description        
         
@@ -16,3 +16,7 @@
     * JavaScript
     * Webpack
     * Carousel
+    
+### Link  View 
+
+    * https://sergii5854.github.io/hw-js-12.1-carousel.github.io/
