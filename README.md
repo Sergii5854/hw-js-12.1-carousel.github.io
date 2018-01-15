@@ -1,5 +1,19 @@
 # Homework 12.1 Realize Infinite carousel:
 
+## Instal
+
+    * npm i 
+
+## Developer mode
+
+    * npm run start:dev 
+    ** Project is running at http://localhost:8080/
+
+## Build mode
+
+    * npm run build 
+    ** Project build at dist folder
+
 ###  Description        
         
     * response on clicks, 
