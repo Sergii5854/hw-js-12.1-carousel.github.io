@@ -30,9 +30,30 @@ document.addEventListener("DOMContentLoaded",function() {
 
   class BSCarousel {
 
-    constructor(config) {
+    constructor(options) {
+      this.config = BSCarousel.mergeSettings(options)
+      this.selector = if(typeof this.config.selector === 'string') {
+       return document.querySelector(this.config.selector);
+      }else {
+        return  this.config.selector;
+      }
+      if (this.selector === null) {
+        throw new Error('Something wrong with your selector 😭');
+      }
+
 
     }
+    static mergeSettings(options) {
+      const settings = {
+        selector: '.bs__carousel',
+        easing: 'ease-out',
+
+        startIndex: 0,
+        draggable: true,
+
+        loop: false,
+
+      };
   }
 
   // new BSCarousel({
