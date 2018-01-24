@@ -31,37 +31,86 @@ document.addEventListener("DOMContentLoaded",function() {
   class BSCarousel {
 
     constructor(options) {
-      this.config = BSCarousel.mergeSettings(options)
-      this.selector = if(typeof this.config.selector === 'string') {
-       return document.querySelector(this.config.selector);
-      }else {
-        return  this.config.selector;
-      }
+      this.config = BSCarousel.mergeSettings(options);
+      console.log(this.config);
+      this.selector = typeof this.config.selector === 'string'
+          ? document.querySelector(this.config.selector)
+          : this.config.selector;
       if (this.selector === null) {
-        throw new Error('Something wrong with your selector 😭');
+        throw new Error('Something wrong with your selector ');
       }
+      this.resolveSlidesNumber();
 
 
+      this.selectorWidth = this.selector.offsetWidth;
+      this.innerElements = [].slice.call(this.selector.children);
+      this.currentSlide = Math.max(0, Math.min(this.config.startIndex, this.innerElements.length - this.perPage));
+      this.transformProperty = BSCarousel.webkitOrNot();
+
+      // Bind all event handlers for referencability
+      ['resizeHandler',
+        'touchstartHandler',
+        'touchendHandler',
+        'touchmoveHandler',
+        'mousedownHandler',
+        'mouseupHandler',
+        'mouseleaveHandler',
+        'mousemoveHandler',
+        'clickHandler'].forEach(method => {
+        this[method] = this[method].bind(this);
+      });
+
+      this.init();
     }
+
     static mergeSettings(options) {
       const settings = {
-        selector: '.bs__carousel',
+        selector: '.bs-carousel',
+        duration: 200,
         easing: 'ease-out',
 
-        startIndex: 0,
-        draggable: true,
-
-        loop: false,
-
+        onInit: () => {},
+        onChange: () => {},
       };
+
+      const userSttings = options;
+      for (const attrname in userSttings) {
+        settings[attrname] = userSttings[attrname];
+      }
+
+      return settings;
+    }
+    resolveSlidesNumber() {
+      if (typeof this.config.perPage === 'number') {
+        this.perPage = this.config.perPage;
+      }
+      else if (typeof this.config.perPage === 'object') {
+        this.perPage = 1;
+        for (const viewport in this.config.perPage) {
+          if (window.innerWidth >= viewport) {
+            this.perPage = this.config.perPage[viewport];
+          }
+        }
+      }
+    }
+
+    static webkitOrNot() {
+      const style = document.documentElement.style;
+      if (typeof style.transform === 'string') {
+        return 'transform';
+      }
+      return 'WebkitTransform';
+    }
+
+
   }
 
-  // new BSCarousel({
-  //   selector: "#siema1"
-  // });
-  // new BSCarousel({
-  //   selector: "#siema"
-  // });
+  new BSCarousel({
+    selector: ".bs-carousel"
+  });
+  new BSCarousel({
+    selector: ".bs-carousel3333"
+  });
 
 
 });
