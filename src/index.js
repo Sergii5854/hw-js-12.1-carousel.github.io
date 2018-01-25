@@ -12,20 +12,6 @@ document.addEventListener("DOMContentLoaded", function () {
   //   console.log("left")
   //   showDivs(slideIndex += n);
   // });
-  // function showDivs(n) {
-  //   var i;
-  //   var x = document.getElementsByClassName("mySlides");
-  //   if (n > x.length) {
-  //     slideIndex = 1
-  //   }
-  //   if (n < 1) {
-  //     slideIndex = x.length
-  //   }
-  //   for (i = 0; i < x.length; i++) {
-  //     x[i].style.display = "none";
-  //   }
-  //   x[slideIndex - 1].style.display = "block";
-  // }
 
 
   class BSCarousel {
@@ -34,13 +20,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
       this.selector = options;
       this.init(this.selector);
+      // this.next();
+      // this.prev();
+
     }
 
     init(selector) {
       console.log("init", selector);
-      let wrap =  document.querySelector(selector)
+      let wrap =  document.querySelector(selector);
       let i;
-      let slideIndex = 1
+      let slideIndex = 1;
       let n =1;
       let carousel = wrap.querySelectorAll('img');
       console.log(carousel.length);
@@ -54,7 +43,21 @@ document.addEventListener("DOMContentLoaded", function () {
         carousel[i].style.display = "none";
       }
       carousel[slideIndex - 1].style.display = "block";
+
+
+
+      wrap.querySelector('.right').addEventListener('click', function () {
+          console.log("right")
+       init(slideIndex += n);
+        });
+
+      wrap.querySelector('.left').addEventListener('click', function () {
+          console.log("left")
+          init(slideIndex += n);
+        });
+
     }
+
 
 
   }
