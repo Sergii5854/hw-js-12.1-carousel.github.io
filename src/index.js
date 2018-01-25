@@ -6,14 +6,15 @@ document.addEventListener("DOMContentLoaded", function () {
     constructor(options) {
       this.slideIndex = 1;
       this.selector = options;
-      this.showSlides(this.slideIndex);
+      this.showSlides(this.slideIndex );
     }
 
     showSlides(index) {
       let slideIndex = index;
-      let selector = this.selector;
-      console.log("init", selector);
-      let wrap = document.querySelector(selector);
+      let select =  this.selector;
+      console.log("init", select);
+      let wrap = document.querySelector(select);
+      console.log(wrap);
       let i;
 
       let n = 1;
@@ -29,18 +30,18 @@ document.addEventListener("DOMContentLoaded", function () {
         carousel[i].style.display = "none";
       }
       carousel[slideIndex - 1].style.display = "block";
-
       this.next()
     }
 
     next() {
-      let slideIndex = this.slideIndex;
+    // let select = document.querySelector(this.selector);
 
-      let selector = document.querySelector(this.selector);
-
-      selector.querySelector('.right').addEventListener('click', function () {
+      document.querySelector(this.selector).querySelector('.right').addEventListener('click', function () {
+        let slideIndex = this.slideIndex;
+        let showSlides = this.showSlides;
+        console.log("next");
         let n = 1;
-       this.showSlides( slideIndex += n)
+       showSlides(slideIndex += n)
       });
     }
 
