@@ -1,7 +1,8 @@
 {
   "scripts": {
     "build": "rimraf dist && webpack --config config/webpack.config.js",
-    "start:dev": "webpack-dev-server --config config/webpack.config.dev.js"
+    "start:dev": "webpack-dev-server --config config/webpack.config.dev.js",
+    "gh": "git add dist && git commit -m 'Initial dist subtree commit'"
   },
   "devDependencies": {
     "babel-core": "6.26.0",
