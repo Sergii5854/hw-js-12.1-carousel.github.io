@@ -33,36 +33,36 @@ document.addEventListener("DOMContentLoaded", function () {
       let select = this.selector;
 
       let carousel = document.querySelector(select);
+      carousel.classList.add('fade')
       let i;
-
       let carouselImg = carousel.querySelectorAll('img');
       let carouselLength = carouselImg.length;
 
-      // if(!!this.slideIndex && this.slideIndex >= 0 && this.slideIndex <= carouselLength) {
-      if (slideIndex >= carouselLength && this.slideIndex >= carouselLength) {
-        this.slideIndex = 0
-      }
-      // if (slideIndex == -1 && this.slideIndex == -1) {
-      //   console.log(this.slideIndex, slideIndex, slideIndex <= 0, carouselLength);
-      //   this.slideIndex = 4;
-      // }
-      if (slideIndex < 1 && this.slideIndex < 1) {
-        console.log(this.slideIndex, slideIndex, slideIndex <= 0, carouselLength);
-        this.slideIndex = 4;
-      }
+      if (!!this.slideIndex && !!slideIndex) {
+        if (slideIndex >= carouselLength && this.slideIndex >= carouselLength) {
+          this.slideIndex = 0
+        }
 
-      for (i = 0; i < carouselLength; i++) {
-        carouselImg[i].style.display = "none";
+        console.log(index, this.slideIndex, slideIndex, slideIndex <= 0, carouselLength);
+        if (slideIndex < 1) {
+          console.log(index, this.slideIndex, slideIndex, slideIndex <= 0, carouselLength);
+          this.slideIndex = 4;
+          slideIndex = 4
+        }
+
+
+        for (i = 0; i < carouselLength; i++) {
+          carouselImg[i].style.display = "none";
+        }
+
+        carouselImg[slideIndex - 1].style.display = "block";
+
+        carouselImg.forEach((item) => {
+          item.classList.add('item');
+          item.style.width = '100%';
+          item.setAttribute('draggable', false);
+        });
       }
-
-      carouselImg[slideIndex - 1].style.display = "block";
-
-      carouselImg.forEach((item) => {
-        item.classList.add('item');
-        item.style.width = '100%';
-        item.setAttribute('draggable', false);
-      });
-      // }
 
     }
 
