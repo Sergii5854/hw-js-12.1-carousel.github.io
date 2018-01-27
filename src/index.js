@@ -43,13 +43,10 @@ document.addEventListener("DOMContentLoaded", function () {
           this.slideIndex = 0
         }
 
-        console.log(index, this.slideIndex, slideIndex, slideIndex <= 0, carouselLength);
         if (slideIndex < 1) {
-          console.log(index, this.slideIndex, slideIndex, slideIndex <= 0, carouselLength);
           this.slideIndex = 4;
           slideIndex = 4
         }
-
 
         for (i = 0; i < carouselLength; i++) {
           carouselImg[i].style.display = "none";
