@@ -6,14 +6,17 @@ document.addEventListener("DOMContentLoaded", function () {
   class BSCarousel {
 
     constructor(options) {
-      this.slideIndex = 1;
+
       this.selector = options;
-      this.hash = this.selector
+
+      if (document.querySelector(this.selector) === null) {
+        throw new Error('Something wrong with your selector 😭');
+      }
+
+      this.slideIndex = 1;
       this.showSlides(this.slideIndex);
-
-      this.addEvents()
-
-      this.currentSlide(this.slideIndex )
+      this.addEvents();
+      this.currentSlide(this.slideIndex);
     }
 
     currentSlide(n) {
@@ -25,25 +28,30 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     showSlides(index) {
-      let slideIndex =  index;
-      console.log(index);
+      let slideIndex = index;
+
       let select = this.selector;
+
       let carousel = document.querySelector(select);
       let i;
 
       let carouselImg = carousel.querySelectorAll('img');
+      let carouselLength = carouselImg.length;
 
-      if (slideIndex >= carouselImg.length) {
-        this.currentSlide(0)
+      // if(!!this.slideIndex && this.slideIndex >= 0 && this.slideIndex <= carouselLength) {
+      if (slideIndex >= carouselLength && this.slideIndex >= carouselLength) {
+        this.slideIndex = 0
+      }
+      // if (slideIndex == -1 && this.slideIndex == -1) {
+      //   console.log(this.slideIndex, slideIndex, slideIndex <= 0, carouselLength);
+      //   this.slideIndex = 4;
+      // }
+      if (slideIndex < 1 && this.slideIndex < 1) {
+        console.log(this.slideIndex, slideIndex, slideIndex <= 0, carouselLength);
+        this.slideIndex = 4;
       }
 
-      // if (slideIndex <= 1) {
-      //   console.log(this.slideIndex ,slideIndex <= 0, carouselImg.length);
-      //   // this.slideIndex = carouselImg.length
-      //   this.currentSlide(carouselImg.length)
-      // }
-
-      for (i = 0; i < carouselImg.length; i++) {
+      for (i = 0; i < carouselLength; i++) {
         carouselImg[i].style.display = "none";
       }
 
@@ -54,6 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
         item.style.width = '100%';
         item.setAttribute('draggable', false);
       });
+      // }
 
     }
 
@@ -74,11 +83,11 @@ document.addEventListener("DOMContentLoaded", function () {
     swipeMove(event) {
       let select = this.selector;
       let carousel = document.querySelector(select);
-      let diff = event.touches
+      let checkSwipe = event.touches
           ? event.touches[0].pageX - this.startX
           : event.pageX - this.startX;
       if (this.swiping) {
-        if (diff > 0) {
+        if (checkSwipe > 0) {
           carousel.scrollLeft -= this.width / 100;
         } else {
           carousel.scrollLeft += this.width / 100;
@@ -120,9 +129,8 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   new BSCarousel(".bs-carousel");
-
   new BSCarousel(".bs-carousel-test");
-
+  new BSCarousel(".bs-carousel2w");
 
 });
 

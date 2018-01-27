@@ -1,5 +1,25 @@
 # Homework 12.1 Realize Infinite carousel:
 
+
+## Usage
+
+```html
+    <div class="your__selector">        
+        <img src="./images/slide1.jpg">
+        <img src="./images/slide3.jpg">
+        <img src="./images/slide4.jpg">
+        <img src="./images/slide4.jpg">       
+    </div>
+```
+
+```js
+    new BSCarousel('.your__selector')
+    // for class used '.' before your selector
+    new BSCarousel('#your__selector')
+    // for id used '#' before your selector
+```
+
+
 ## Install
 
     * npm i 
@@ -24,6 +44,8 @@
 
     * JavaScript
     * Webpack
+    * HTML5
+    * Stylus
     
 ### Key Word 
     
