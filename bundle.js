@@ -9188,7 +9188,7 @@ exports = module.exports = __webpack_require__(331)(undefined);
 
 
 // module
-exports.push([module.i, "body {\n  box-sizing: border-box;\n  margin: 0;\n  padding: 0;\n  background: #f5f5f5;\n}\n.wrap {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: center;\n  align-items: center;\n}\n.carousel {\n  margin: 10px 10px;\n  width: 40%;\n  border: 5px solid #222;\n  box-sizing: border-box;\n}\n.item {\n  cursor: pointer;\n}\n.fade {\n  animation-name: fade;\n  animation-duration: 3.5s;\n}\n@-moz-keyframes fade {\n  from {\n    opacity: 0.8;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@-webkit-keyframes fade {\n  from {\n    opacity: 0.8;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@-o-keyframes fade {\n  from {\n    opacity: 0.8;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@keyframes fade {\n  from {\n    opacity: 0.8;\n  }\n  to {\n    opacity: 1;\n  }\n}\n", ""]);
+exports.push([module.i, "body {\n  box-sizing: border-box;\n  margin: 0;\n  padding: 0;\n  background: #f5f5f5;\n}\n.wrap {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: center;\n  align-items: center;\n}\n.carousel {\n  margin: 10px 10px;\n  width: 40%;\n  border: 5px solid #222;\n  box-sizing: border-box;\n}\n.item {\n  cursor: pointer;\n  animation-name: fade;\n  animation-duration: 3.5s;\n}\n.fade {\n  animation-name: fade;\n  animation-duration: 3.5s;\n}\n@-moz-keyframes fade {\n  from {\n    opacity: 0.5;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@-webkit-keyframes fade {\n  from {\n    opacity: 0.5;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@-o-keyframes fade {\n  from {\n    opacity: 0.5;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@keyframes fade {\n  from {\n    opacity: 0.5;\n  }\n  to {\n    opacity: 1;\n  }\n}\n", ""]);
 
 // exports
 
