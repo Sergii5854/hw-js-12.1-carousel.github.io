@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
       let select = this.selector;
 
       let carousel = document.querySelector(select);
-      carousel.classList.add('fade')
+      carousel.classList.add('fade');
       let i;
       let carouselImg = carousel.querySelectorAll('img');
       let carouselLength = carouselImg.length;
