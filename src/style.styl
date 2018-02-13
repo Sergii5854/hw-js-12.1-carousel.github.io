@@ -14,6 +14,7 @@ body
   width 40%
   border 5px solid #222
   box-sizing border-box
+  position relative
 
 .item
   cursor pointer
@@ -34,3 +35,24 @@ body
     opacity: 1;
   }
 }
+
+.wrap-indicators
+  position absolute
+  display flex
+  width: 100%;
+  bottom: 10px;
+  margin: 0;
+  padding: 10px 20px 0 10px;
+.dot
+  cursor: pointer;
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.6s ease;
+
+
+.active, .dot:hover
+  background-color: #717171;
