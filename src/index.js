@@ -13,9 +13,12 @@ document.addEventListener("DOMContentLoaded", function () {
         throw new Error('Something wrong with your selector 😭');
       }
       // variables
+      this.swiping = false;
       this.carousel = document.querySelector(this.selector);
       this.carouselImg = this.carousel.querySelectorAll('img');
       this.carouselLength = this.carouselImg.length;
+      this.itemWidth = parseFloat(getComputedStyle(this.carousel.querySelector('img')).width);
+      this.carouselWidth = (this.carouselLength - 1) * this.itemWidth;
       this.build()
 
     }
@@ -29,8 +32,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     // method for create dots
     createIndicators() {
+
       let wrapIndicators = document.createElement('ul');
-      wrapIndicators.classList.add('wrap-indicators')
+      wrapIndicators.classList.add('wrap-indicators');
 
       if (this.carouselLength > 1) {
         this.carousel.appendChild(wrapIndicators);
@@ -51,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 //How TO - Slideshow https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_slideshow
     showSlides(index) {
-
+      console.log('this.carouselWidth', this.itemWidth,  this.carouselWidth);
       this.carousel.classList.add('fade');
       if (!!this.index && !!index) {
         if (index >= this.carouselLength && this.index >= this.carouselLength) {
@@ -91,17 +95,19 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 // direction of swipe from start point
     swipeMove(event) {
-
+      this.carouselAbs = Math.abs(parseFloat(getComputedStyle(this.carousel).right));
+      console.log(this.carouselAbs);
       let checkSwipe = event.touches
           ? event.touches[0].pageX - this.startX
           : event.pageX - this.startX;
-      if (this.swiping) {
-        if (checkSwipe > 0) {
-          this.carousel.scrollLeft -= this.width / 100;
-        } else {
-          this.carousel.scrollLeft += this.width / 100;
-        }
-      }
+      // if (this.swiping) {
+      //   if (checkSwipe > 100) {
+      //     this.carousel.scrollLeft -= this.width / 100;
+      //   } else {
+      //     this.carousel.scrollLeft += this.width / 100;
+      //   }
+      // }
+      console.log(this.carouselAbs, checkSwipe, this.swiping, checkSwipe > 100);
       event.preventDefault()
     }
 // ending point, get direction
@@ -120,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     addEvents() {
       this.startX = undefined;
-      this.carousel.ondragstart = () => false;
+      this.carousel.ondragstart = () => true;
 
       this.carousel.onmousedown = this.swipeStart.bind(this);
       this.carousel.onmousemove = this.swipeMove.bind(this);
