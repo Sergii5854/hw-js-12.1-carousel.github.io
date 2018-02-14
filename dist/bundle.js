@@ -9030,38 +9030,45 @@ module.exports = function (regExp, replace) {
 __webpack_require__(329);
 
 document.addEventListener("DOMContentLoaded", function () {
-  // create instance of carousel
   class BScarousel {
-    // constructor with one argument - string of selector
     constructor(options) {
-
       this.selector = options;
-      // handling err if something wrong argument, and don't destroy all JS
       if (document.querySelector(this.selector) === null) {
         throw new Error('Something wrong with your selector 😭');
       }
-      // variables
-      this.carousel = document.querySelector(this.selector);
-      this.carouselImg = this.carousel.querySelectorAll('img');
-      this.carouselLength = this.carouselImg.length;
       this.build();
     }
-    // method for current slider/ index / img
-    currentSlide(n) {
-      this.showSlides(this.index = n);
-    }
-    // method for change slider
-    plusSlides(n) {
-      this.showSlides(this.index += n);
-    }
-    // method for create dots
-    createIndicators() {
-      let wrapIndicators = document.createElement('ul');
-      wrapIndicators.classList.add('wrap-indicators');
 
+    carouselVaribls() {
+      this.swiping = false;
+      this.previous = null;
+      this.carousel = document.querySelector(`${this.selector}`);
+      this.carouselList = this.carousel.querySelector(`.carousel__display`);
+
+      this.carouselImg = this.carousel.querySelectorAll('img');
+
+      this.carouselLength = this.carouselImg.length;
+      this.itemWidth = parseFloat(getComputedStyle(this.carousel.querySelector('img')).width);
+      this.itemHeight = parseFloat(getComputedStyle(this.carousel.querySelector('img')).height);
+      this.carouselWidth = (this.carouselLength - 1) * this.itemWidth;
+      this.carouselSwipe = Math.abs(parseFloat(getComputedStyle(this.carouselList).left));
+
+      this.item = this.itemWidth || this.carouselSwipe / this.itemWidth;
+      this.wrapIndicators = document.createElement('ul');
+
+      console.log(" this.carouselList", this.carouselList);
+      console.log(" this.carouselLength", this.carouselLength);
+      console.log(" this.carouselWidth", this.carouselWidth);
+      console.log(" this.itemWidth", this.itemWidth);
+      console.log(" this.item", this.item);
+      console.log(" this.carouselSwipe", this.carouselSwipe);
+    }
+
+    createIndicators() {
+      this.wrapIndicators.classList.add('wrap-indicators');
       if (this.carouselLength > 1) {
-        this.carousel.appendChild(wrapIndicators);
-        for (let i = 1; i < this.carouselLength + 1; i++) {
+        this.carousel.appendChild(this.wrapIndicators);
+        for (let i = 0; i < this.carouselLength; i++) {
 
           let dot = document.createElement('li');
           dot.classList.add('dot');
@@ -9069,104 +9076,85 @@ document.addEventListener("DOMContentLoaded", function () {
 
           dot.addEventListener('click', e => {
             this.index = e.target.value;
-            this.showSlides(this.index);
+            this.carouselList.style.left = -this.index * this.itemWidth + 'px';
           });
-
-          wrapIndicators.appendChild(dot);
+          this.wrapIndicators.appendChild(dot);
         }
       }
     }
-    //How TO - Slideshow https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_slideshow
-    showSlides(index) {
 
-      this.carousel.classList.add('fade');
-      if (!!this.index && !!index) {
-        if (index >= this.carouselLength && this.index >= this.carouselLength) {
-          this.index = 0;
-        }
-
-        if (index < 1) {
-          this.index = this.carouselLength;
-          index = this.carouselLength;
-        }
-
-        for (let i = 0; i < this.carouselLength; i++) {
-          this.carouselImg[i].style.display = "none";
-        }
-        this.carouselImg[index - 1].style.display = "block";
-
-        this.carouselImg.forEach(item => {
-          item.classList.add('item');
-          item.style.width = '100%';
-          item.setAttribute('draggable', false);
-        });
-      }
-    }
-
-    // control swipe direction ( change slider for + or -  direction)
-    controls(direction) {
-      if (direction === 'left') {
-        this.plusSlides(1);
-      } else {
-        this.plusSlides(-1);
-      }
-    }
-    // start point off swipe, get direction of swipe
-    swipeStart(e) {
+    swipeStart() {
       this.swiping = true;
-      this.startX = e.pageX;
     }
-    // direction of swipe from start point
-    swipeMove(event) {
 
-      let checkSwipe = event.touches ? event.touches[0].pageX - this.startX : event.pageX - this.startX;
+    swipeMove(event) {
       if (this.swiping) {
-        if (checkSwipe > 0) {
-          this.carousel.scrollLeft -= this.width / 100;
-        } else {
-          this.carousel.scrollLeft += this.width / 100;
+        if (this.previous) {
+          this.left = parseInt(this.carouselList.style.left || 0) + (event.clientX - this.previous) * 2;
+
+          if (this.left > 0) {
+            this.left = 0;
+          } else if (this.carouselWidth - this.itemWidth < Math.abs(this.left)) {
+            console.log(this.left, this.carouselWidth - this.itemWidth);
+            this.left = -this.carouselWidth;
+          }
+          this.carouselList.style.left = this.left + 'px';
         }
+        this.previous = event.clientX;
       }
       event.preventDefault();
     }
-    // ending point, get direction
-    swipeEnd(event) {
-      this.swiping = false;
-      if (event.touches) {
-        event.pageX < this.startX ? this.controls('left') : this.controls('right');
-      } else {
-        event.pageX < this.startX ? this.controls('left') : this.controls('right');
+
+    swipeEnd() {
+
+      if (this.carouselSwipe % this.itemWidth > this.itemWidth / this.carouselLength) {
+        this.item++;
       }
+
+      if (this.carouselSwipe >= this.carouselWidth) {
+        this.item = 0;
+      }
+
+      if (this.carouselSwipe <= 0) {
+        this.item = this.carouselLength;
+      }
+      this.carouselList.style.left = -(this.item * this.itemWidth) - this.itemWidth + 'px';
+      this.swiping = false;
+      this.previous = null;
     }
 
     addEvents() {
-      this.startX = undefined;
-      this.carousel.ondragstart = () => false;
+      console.log("start");
+      this.carouselList.onmousedown = this.swipeStart.bind(this);
+      this.carouselList.onmousemove = this.swipeMove.bind(this);
+      this.carouselList.onmouseup = this.swipeEnd.bind(this);
 
-      this.carousel.onmousedown = this.swipeStart.bind(this);
-      this.carousel.onmousemove = this.swipeMove.bind(this);
-      this.carousel.onmouseup = this.swipeEnd.bind(this);
+      this.carouselList.ontouchstart = this.swipeStart.bind(this);
+      this.carouselList.ontouchmove = this.swipeMove.bind(this);
+      this.carouselList.ontouchend = this.swipeEnd.bind(this);
+    }
+    removeEvents() {
+      console.log("remove");
+      this.carouselList.onmousedown = null;
+      this.carouselList.onmousemove = null;
+      this.carouselList.onmouseup = null;
 
-      this.carousel.ontouchstart = this.swipeStart.bind(this);
-      this.carousel.ontouchmove = this.swipeMove.bind(this);
-      this.carousel.ontouchend = this.swipeEnd.bind(this);
+      this.carouselList.ontouchstart = null;
+      this.carouselList.ontouchmove = null;
+      this.carouselList.ontouchend = null;
     }
 
-    //build all methods to create carousel
     build() {
-
-      this.index = 1;
-      this.showSlides(this.index);
-      this.addEvents();
-      this.currentSlide(this.index);
+      this.carouselVaribls();
       this.createIndicators();
+      this.addEvents();
     }
   }
 
   new BScarousel(".bs-carousel");
   new BScarousel(".bs-carousel-test");
   new BScarousel(".bs-carousel2");
-});
+}, false);
 
 /***/ }),
 /* 329 */
@@ -9208,7 +9196,7 @@ exports = module.exports = __webpack_require__(331)(undefined);
 
 
 // module
-exports.push([module.i, "body {\n  box-sizing: border-box;\n  margin: 0;\n  padding: 0;\n  background: #f5f5f5;\n}\n.wrap {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: center;\n  align-items: center;\n}\n.carousel {\n  margin: 10px 10px;\n  width: 40%;\n  border: 5px solid #222;\n  box-sizing: border-box;\n  position: relative;\n}\n.item {\n  cursor: pointer;\n  animation-name: fade;\n  animation-duration: 3.5s;\n}\n.fade {\n  animation-name: fade;\n  animation-duration: 3.5s;\n}\n.wrap-indicators {\n  position: absolute;\n  display: flex;\n  width: 100%;\n  bottom: 10px;\n  margin: 0;\n  padding: 10px 20px 0 10px;\n}\n.dot {\n  cursor: pointer;\n  height: 15px;\n  width: 15px;\n  margin: 0 2px;\n  background-color: #bbb;\n  border-radius: 50%;\n  display: inline-block;\n  transition: background-color 0.6s ease;\n}\n.active,\n.dot:hover {\n  background-color: #717171;\n}\n@-moz-keyframes fade {\n  from {\n    opacity: 0.5;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@-webkit-keyframes fade {\n  from {\n    opacity: 0.5;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@-o-keyframes fade {\n  from {\n    opacity: 0.5;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@keyframes fade {\n  from {\n    opacity: 0.5;\n  }\n  to {\n    opacity: 1;\n  }\n}\n", ""]);
+exports.push([module.i, "body {\n  box-sizing: border-box;\n  margin: 0;\n  padding: 0;\n  background: #f5f5f5;\n}\n.wrap {\n  display: flex;\n  flex: 1 1 auto;\n  flex-wrap: wrap;\n}\n.carousel {\n  margin: 10px auto;\n  box-sizing: border-box;\n  position: relative;\n  width: 500px;\n  height: 340px;\n  border: 5px solid #222;\n  overflow: hidden;\n  user-select: none;\n  cursor: pointer;\n}\n.carousel__display {\n  position: absolute;\n  height: 340px;\n  width: 2000%;\n  transition: 0.3s;\n}\n.item__carousel {\n  cursor: pointer;\n  float: left;\n  height: auto;\n  width: 500px;\n  animation-name: fade;\n  animation-duration: 3.5s;\n}\n.fade {\n  animation-name: fade;\n  animation-duration: 3.5s;\n}\n.wrap-indicators {\n  position: absolute;\n  display: flex;\n  width: 100%;\n  bottom: 10px;\n  margin: 0;\n  padding: 10px 20px 0 10px;\n}\n.dot {\n  cursor: pointer;\n  height: 15px;\n  width: 15px;\n  margin: 0 2px;\n  background-color: #bbb;\n  border-radius: 50%;\n  display: inline-block;\n  transition: background-color 0.6s ease;\n}\n.active,\n.dot hover {\n  background-color: #717171;\n}\n@-moz-keyframes fade {\n  from {\n    opacity: 0.5;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@-webkit-keyframes fade {\n  from {\n    opacity: 0.5;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@-o-keyframes fade {\n  from {\n    opacity: 0.5;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@keyframes fade {\n  from {\n    opacity: 0.5;\n  }\n  to {\n    opacity: 1;\n  }\n}\n", ""]);
 
 // exports
 

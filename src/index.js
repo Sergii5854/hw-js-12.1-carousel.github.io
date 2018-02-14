@@ -2,13 +2,9 @@ import './style.styl';
 
 
 document.addEventListener("DOMContentLoaded", function () {
-// create instance of carousel
   class BScarousel {
-    // constructor with one argument - string of selector
     constructor(options) {
-
       this.selector = options;
-      // handling err if something wrong argument, and don't destroy all JS
       if (document.querySelector(this.selector) === null) {
         throw new Error('Something wrong with your selector 😭');
       }
@@ -39,8 +35,6 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log(" this.itemWidth",this.itemWidth);
       console.log(" this.item",this.item);
       console.log(" this.carouselSwipe",this.carouselSwipe);
-
-
     }
 
     createIndicators() {
@@ -128,9 +122,7 @@ document.addEventListener("DOMContentLoaded", function () {
     build() {
       this.carouselVaribls();
       this.createIndicators();
-
       this.addEvents();
-
 
     }
   }
