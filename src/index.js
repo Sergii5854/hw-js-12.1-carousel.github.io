@@ -23,9 +23,9 @@ document.addEventListener("DOMContentLoaded", function () {
       this.itemWidth = parseFloat(getComputedStyle(this.carousel.querySelector('img')).width);
       this.itemHeight = parseFloat(getComputedStyle(this.carousel.querySelector('img')).height);
       this.carouselWidth = (this.carouselLength - 1) * this.itemWidth;
-      this.carouselSwipe = Math.abs(parseFloat(getComputedStyle(this.carouselList).left));
+      this.carouselSwipe = null ;
 
-      this.item = this.itemWidth || (this.carouselSwipe / this.itemWidth );
+      this.item = (this.carouselSwipe / this.itemWidth );
       this.wrapIndicators = document.createElement('ul');
 
 
@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", function () {
     swipeMove(event) {
       if (this.swiping) {
         if (this.previous) {
-          this.left = parseInt(this.carouselList.style.left || 0) + ( event.clientX - this.previous  ) * 2;
+          this.left = parseInt(this.carouselList.style.left || 0) + ( event.clientX - this.previous  ) *3 ;
 
           if (this.left > 0) {
             this.left = 0;
@@ -79,22 +79,26 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     swipeEnd() {
-
-
-      if (this.carouselSwipe % this.itemWidth > this.itemWidth / this.carouselLength) {
-        this.item++;
-      }
-
+      this.swiping = false;
+      this.previous= null;
+      this.carouselSwipe = Math.abs(parseFloat(getComputedStyle(this.carouselList).left));
+      console.log(this.carouselSwipe <= 0, this.carouselSwipe , this.carouselWidth, -this.item * this.itemWidth);
       if (this.carouselSwipe >= this.carouselWidth) {
         this.item = 0
       }
 
       if (this.carouselSwipe <= 0) {
-        this.item = this.carouselLength
+        console.log("swipeleft");
+        this.item = -(this.item * this.itemWidth)
       }
-      this.carouselList.style.left = -(this.item * this.itemWidth) - this.itemWidth + 'px';
-      this.swiping = false;
-      this.previous= null;
+      if ((this.carouselSwipe % this.itemWidth) > (this.itemWidth / this.carouselLength)) {
+        console.log(true, "item swipe");
+        this.item++;
+      }
+
+
+      this.carouselList.style.left = -(this.item * this.itemWidth)  + 'px';
+
     }
 
     addEvents() {
