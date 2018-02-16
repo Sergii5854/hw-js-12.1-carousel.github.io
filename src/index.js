@@ -16,25 +16,15 @@ document.addEventListener("DOMContentLoaded", function () {
       this.previous = null;
       this.carousel = document.querySelector(`${this.selector}`);
       this.carouselList =this.carousel.querySelector(`.carousel__display`);
-
       this.carouselImg = this.carousel.querySelectorAll('img');
-
       this.carouselLength = this.carouselImg.length;
       this.itemWidth = parseFloat(getComputedStyle(this.carousel.querySelector('img')).width);
       this.itemHeight = parseFloat(getComputedStyle(this.carousel.querySelector('img')).height);
       this.carouselWidth = (this.carouselLength - 1) * this.itemWidth;
       this.carouselSwipe = null ;
-
       this.item = (this.carouselSwipe / this.itemWidth );
       this.wrapIndicators = document.createElement('ul');
 
-
-      console.log(" this.carouselList",this.carouselList);
-      console.log(" this.carouselLength",this.carouselLength);
-      console.log(" this.carouselWidth",this.carouselWidth);
-      console.log(" this.itemWidth",this.itemWidth);
-      console.log(" this.item",this.item);
-      console.log(" this.carouselSwipe",this.carouselSwipe);
     }
 
     createIndicators() {
@@ -65,10 +55,10 @@ document.addEventListener("DOMContentLoaded", function () {
         if (this.previous) {
           this.left = parseInt(this.carouselList.style.left || 0) + ( event.clientX - this.previous  ) *3 ;
 
-          if (this.left > 0) {
+          if (this.left >= 0) {
             this.left = 0;
-          } else if (this.carouselWidth-this.itemWidth < Math.abs(this.left)) {
-            console.log(this.left, this.carouselWidth - this.itemWidth);
+          } else if (this.carouselWidth - this.itemWidth < Math.abs(this.left)) {
+
             this.left = -this.carouselWidth;
           }
           this.carouselList.style.left = this.left + 'px';
@@ -82,27 +72,27 @@ document.addEventListener("DOMContentLoaded", function () {
       this.swiping = false;
       this.previous= null;
       this.carouselSwipe = Math.abs(parseFloat(getComputedStyle(this.carouselList).left));
-      console.log(this.carouselSwipe <= 0, this.carouselSwipe , this.carouselWidth, -this.item * this.itemWidth);
+      console.log(this.carouselLength, this.carouselSwipe <= 0, this.carouselSwipe , this.carouselWidth, -this.item * this.itemWidth);
       if (this.carouselSwipe >= this.carouselWidth) {
         this.item = 0
       }
 
       if (this.carouselSwipe <= 0) {
         console.log("swipeleft");
-        this.item = -(this.item * this.itemWidth)
+        this.item = this.carouselLength-1
       }
       if ((this.carouselSwipe % this.itemWidth) > (this.itemWidth / this.carouselLength)) {
         console.log(true, "item swipe");
-        this.item++;
+        ++this.item;
       }
-
-
+      if ((this.carouselSwipe % this.itemWidth) < (this.itemWidth / this.carouselLength)) {
+        console.log(true, "item swipe");
+        --this.item;
+      }
       this.carouselList.style.left = -(this.item * this.itemWidth)  + 'px';
-
     }
 
     addEvents() {
-      console.log("start");
       this.carouselList.onmousedown = this.swipeStart.bind(this);
       this.carouselList.onmousemove = this.swipeMove.bind(this);
       this.carouselList.onmouseup = this.swipeEnd.bind(this);
@@ -111,17 +101,6 @@ document.addEventListener("DOMContentLoaded", function () {
       this.carouselList.ontouchmove = this.swipeMove.bind(this);
       this.carouselList.ontouchend = this.swipeEnd.bind(this);
     }
-    removeEvents() {
-      console.log("remove");
-      this.carouselList.onmousedown = null;
-      this.carouselList.onmousemove = null;
-      this.carouselList.onmouseup = null;
-
-      this.carouselList.ontouchstart = null;
-      this.carouselList.ontouchmove = null;
-      this.carouselList.ontouchend = null;
-    }
-
 
     build() {
       this.carouselVaribls();
