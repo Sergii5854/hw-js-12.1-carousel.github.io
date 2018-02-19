@@ -9047,6 +9047,7 @@ document.addEventListener("DOMContentLoaded", function () {
       this.carouselList = this.carousel.querySelector(`.carousel__display`);
       this.carouselImg = this.carousel.querySelectorAll('img');
       this.carouselLength = this.carouselImg.length;
+      this.itemWidth = parseFloat(getComputedStyle(this.carousel.querySelector('img')).width);
       this.carouselWidth = (this.carouselLength - 1) * this.itemWidth;
       this.wrapIndicators = document.createElement('ul');
 
