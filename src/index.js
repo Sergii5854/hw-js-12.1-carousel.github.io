@@ -64,10 +64,11 @@ document.addEventListener("DOMContentLoaded", function () {
           this.left = parseInt(this.carouselList.style.left || 0) + ( event.clientX - this.previous  )*2;
           if (this.left >= 0) {
             this.left = 0;
+            // this.left = -this.carouselWidth;
           } else if (this.carouselWidth < Math.abs(this.left)) {
-            this.left = this.carouselWidth;
-          }else {
+            // this.left = this.carouselWidth;
             this.left = 0;
+            this.item = 0;
           }
           this.carouselList.style.left = this.left + 'px';
         }
@@ -78,28 +79,35 @@ document.addEventListener("DOMContentLoaded", function () {
 
     swipeEnd() {
       this.carouselSwipe = Math.abs(parseFloat(getComputedStyle(this.carouselList).left));
-      this.item = (this.carouselSwipe / this.itemWidth) | 1;
+      console.log('this.carouselSwipe', this.carouselSwipe);
+      this.item = (this.carouselSwipe / this.itemWidth)| 0 || 0;
 
 
       if (this.carouselSwipe >= this.carouselWidth) {
         this.item = 0;
+        this.carouselList.style.left = '0px';
         this.swiping = false;
       }
 
       if (this.carouselSwipe <= 0) {
-        this.item = this.carouselLength
+        this.item = this.carouselLength -1;
+        this.carouselList.style.left = this.carouselWidth + 'px';
         this.swiping = false;
       }
-      if (event.touches) {
-        (event.pageX < this.startX)
-            ? this.controls('left')
-            : this.controls('right')
-      } else {
-        (event.pageX < this.startX)
-            ? this.controls('left')
-            : this.controls('right')
-      }
 
+        // if (event.touches) {
+        //   (event.pageX < this.startX)
+        //       ? this.controls('left')
+        //       : this.controls('right')
+        // } else {
+        //   (event.pageX < this.startX)
+        //       ? this.controls('left')
+        //       : this.controls('right')
+        // }
+        //
+
+
+      console.log("this.item new", this.item);
       this.carouselList.style.left = -Math.abs(this.item * this.itemWidth) + 'px';
       this.previous = null;
       this.swiping = false;
@@ -107,11 +115,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     controls(direction) {
-      console.log(this.item);
+
       if (direction === 'left') {
         this.item++
       } else {
-        this.item = this.item -1
+        this.item
       }
     }
 
