@@ -9044,13 +9044,16 @@ document.addEventListener("DOMContentLoaded", function () {
     // declarate all variables we need to operate carousel
     carouselVariabls() {
       this.carousel = document.querySelector(`${this.selector}`);
-      this.carouselList = this.carousel.querySelector(`.carousel__display`);
-      this.carouselImg = this.carousel.querySelectorAll('img');
-      this.carouselLength = this.carouselImg.length;
-      this.itemWidth = parseFloat(getComputedStyle(this.carousel.querySelector('img')).width);
-      this.carouselWidth = (this.carouselLength - 1) * this.itemWidth;
-      this.wrapIndicators = document.createElement('ul');
 
+      this.carouselOptions = {
+        carouselList: this.carousel.querySelector(`.carousel__display`),
+        carouselImg: this.carousel.querySelectorAll('img'),
+        carouselLength: this.carousel.querySelectorAll('img').length,
+        itemWidth: parseFloat(getComputedStyle(this.carousel.querySelector('img')).width),
+        wrapIndicators: document.createElement('ul')
+      };
+
+      this.carouselWidth = (this.carouselOptions.carouselLength - 1) * this.carouselOptions.itemWidth;
       this.swiping = false;
       this.previous = null;
       this.carouselSwipe = null;
@@ -9059,18 +9062,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // create indicators - dots
     createIndicators() {
-      this.wrapIndicators.classList.add('wrap-indicators');
-      if (this.carouselLength > 1) {
-        this.carousel.appendChild(this.wrapIndicators);
-        for (let i = 0; i < this.carouselLength; i++) {
+      this.carouselOptions.wrapIndicators.classList.add('wrap-indicators');
+      if (this.carouselOptions.carouselLength > 1) {
+        this.carousel.appendChild(this.carouselOptions.wrapIndicators);
+        for (let i = 0; i < this.carouselOptions.carouselLength; i++) {
           let dot = document.createElement('li');
           dot.classList.add('dot');
           dot.setAttribute('value', i);
           dot.addEventListener('click', e => {
             this.index = e.target.value;
-            this.carouselList.style.left = -this.index * this.itemWidth + 'px';
+            this.carouselOptions.carouselList.style.left = -this.index * this.carouselOptions.itemWidth + 'px';
           });
-          this.wrapIndicators.appendChild(dot);
+          this.carouselOptions.wrapIndicators.appendChild(dot);
         }
       }
     }
@@ -9085,61 +9088,66 @@ document.addEventListener("DOMContentLoaded", function () {
     swipeMove(event) {
       if (this.swiping) {
         if (this.previous) {
-          this.left = parseInt(this.carouselList.style.left || 0) + (event.clientX - this.previous) * 2; //get the meaning of our movement
+          this.left = parseInt(this.carouselOptions.carouselList.style.left || 0) + (event.clientX - this.previous) * 2; //get the meaning of our movement
 
           if (this.left >= 0) {
             this.left = 0;
           } else if (this.carouselWidth < Math.abs(this.left)) {
             this.left = 0;
           }
-          this.carouselList.style.left = this.left + 'px';
+          this.carouselOptions.carouselList.style.left = this.left + 'px';
         }
         this.previous = event.clientX;
       }
       event.preventDefault();
     }
+
     //end  proses of dragging event;  expect the final position
     swipeEnd() {
-      this.carouselSwipe = Math.abs(parseFloat(getComputedStyle(this.carouselList).left)); // get value of swipe
-      this.item = this.carouselSwipe / this.itemWidth | 0 || 0; // get current item
+      if (this.swiping) {
+        this.carouselSwipe = Math.abs(parseFloat(getComputedStyle(this.carouselOptions.carouselList).left)); // get value of swipe
+        this.item = this.carouselSwipe / this.carouselOptions.itemWidth | 0 || 0; // get current item
 
-      if (this.carouselSwipe >= this.carouselWidth) {
-        this.item = 0;
-        this.carouselList.style.left = '0px';
+        if (this.carouselSwipe >= this.carouselWidth) {
+          this.item = 0;
+          this.carouselOptions.carouselList.style.left = '0px';
+          this.swiping = false;
+        }
+
+        if (this.carouselSwipe <= 0) {
+          this.item = this.carouselOptions.carouselLength - 1;
+          this.carouselOptions.carouselList.style.left = this.carouselWidth + 'px';
+          this.swiping = false;
+        }
+        // swiping function
+        if (event.touches) {
+          event.pageX < this.startX ? this.controls('left') : this.controls('right');
+        } else {
+          event.pageX < this.startX ? this.controls('left') : this.controls('right');
+        }
+
+        this.carouselOptions.carouselList.style.left = -Math.abs(this.item * this.carouselOptions.itemWidth) + 'px'; // expect the final position
+        this.previous = null;
         this.swiping = false;
       }
-
-      if (this.carouselSwipe <= 0) {
-        this.item = this.carouselLength - 1;
-        this.carouselList.style.left = this.carouselWidth + 'px';
-        this.swiping = false;
-      }
-      // swiping function
-      if (event.touches) {
-        event.pageX < this.startX ? this.controls('left') : this.controls('right');
-      } else {
-        event.pageX < this.startX ? this.controls('left') : this.controls('right');
-      }
-
-      this.carouselList.style.left = -Math.abs(this.item * this.itemWidth) + 'px'; // expect the final position
-      this.previous = null;
-      this.swiping = false;
     }
+
     // swipe event
     controls(direction) {
       if (direction === 'left') {
         this.item++;
       }
     }
+
     //  add event to current instance of carousel
     addEvents() {
-      this.carouselList.onmousedown = this.swipeStart.bind(this);
-      this.carouselList.onmousemove = this.swipeMove.bind(this);
-      this.carouselList.onmouseup = this.swipeEnd.bind(this);
+      this.carouselOptions.carouselList.onmousedown = this.swipeStart.bind(this);
+      this.carouselOptions.carouselList.onmousemove = this.swipeMove.bind(this);
+      this.carouselOptions.carouselList.onmouseup = this.swipeEnd.bind(this);
 
-      this.carouselList.ontouchstart = this.swipeStart.bind(this);
-      this.carouselList.ontouchmove = this.swipeMove.bind(this);
-      this.carouselList.ontouchend = this.swipeEnd.bind(this);
+      this.carouselOptions.carouselList.ontouchstart = this.swipeStart.bind(this);
+      this.carouselOptions.carouselList.ontouchmove = this.swipeMove.bind(this);
+      this.carouselOptions.carouselList.ontouchend = this.swipeEnd.bind(this);
     }
 
     // build our instance
@@ -9195,7 +9203,7 @@ exports = module.exports = __webpack_require__(331)(undefined);
 
 
 // module
-exports.push([module.i, "body {\n  box-sizing: border-box;\n  margin: 0;\n  padding: 0;\n  background: #f5f5f5;\n}\n.wrap {\n  display: flex;\n  flex: 1 1 auto;\n  flex-wrap: wrap;\n}\n.carousel {\n  margin: 10px auto;\n  box-sizing: border-box;\n  position: relative;\n  width: 500px;\n  height: 340px;\n  border: 5px solid #222;\n  overflow: hidden;\n  user-select: none;\n  cursor: pointer;\n}\n.carousel__display {\n  position: absolute;\n  height: 340px;\n  width: 2000%;\n  transition: 0.3s;\n}\n.item__carousel {\n  cursor: pointer;\n  float: left;\n  height: auto;\n  width: 500px;\n  animation-name: fade;\n  animation-duration: 3.5s;\n}\n.fade {\n  animation-name: fade;\n  animation-duration: 3.5s;\n}\n.wrap-indicators {\n  position: absolute;\n  display: flex;\n  width: 100%;\n  bottom: 10px;\n  margin: 0;\n  padding: 10px 20px 0 10px;\n}\n.dot {\n  cursor: pointer;\n  height: 15px;\n  width: 15px;\n  margin: 0 2px;\n  background-color: #bbb;\n  border-radius: 50%;\n  display: inline-block;\n  transition: background-color 0.6s ease;\n}\n.active,\n.dot hover {\n  background-color: #717171;\n}\n@-moz-keyframes fade {\n  from {\n    opacity: 0.5;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@-webkit-keyframes fade {\n  from {\n    opacity: 0.5;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@-o-keyframes fade {\n  from {\n    opacity: 0.5;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@keyframes fade {\n  from {\n    opacity: 0.5;\n  }\n  to {\n    opacity: 1;\n  }\n}\n", ""]);
+exports.push([module.i, "body {\n  box-sizing: border-box;\n  margin: 0;\n  padding: 0;\n  background: #f5f5f5;\n}\n.wrap {\n  display: flex;\n  flex: 1 1 auto;\n  flex-wrap: wrap;\n}\n.carousel {\n  margin: 10px auto;\n  box-sizing: border-box;\n  position: relative;\n  width: 1024px;\n  height: 768px;\n  border: 5px solid #222;\n  overflow: hidden;\n  user-select: none;\n  cursor: pointer;\n}\n.carousel__display {\n  position: absolute;\n  height: 340px;\n  width: 2000%;\n  transition: 0.3s;\n}\n.item__carousel {\n  cursor: pointer;\n  float: left;\n  height: auto;\n  width: 1024px;\n  animation-name: fade;\n  animation-duration: 3.5s;\n}\n.fade {\n  animation-name: fade;\n  animation-duration: 3.5s;\n}\n.wrap-indicators {\n  position: absolute;\n  display: flex;\n  width: 100%;\n  bottom: 10px;\n  margin: 0;\n  padding: 10px 20px 0 10px;\n}\n.dot {\n  cursor: pointer;\n  height: 15px;\n  width: 15px;\n  margin: 0 2px;\n  background-color: #bbb;\n  border-radius: 50%;\n  display: inline-block;\n  transition: background-color 0.6s ease;\n}\n.active,\n.dot hover {\n  background-color: #717171;\n}\n@-moz-keyframes fade {\n  from {\n    opacity: 0.5;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@-webkit-keyframes fade {\n  from {\n    opacity: 0.5;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@-o-keyframes fade {\n  from {\n    opacity: 0.5;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@keyframes fade {\n  from {\n    opacity: 0.5;\n  }\n  to {\n    opacity: 1;\n  }\n}\n", ""]);
 
 // exports
 
