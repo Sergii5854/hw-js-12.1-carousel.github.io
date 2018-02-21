@@ -57,31 +57,28 @@ document.addEventListener("DOMContentLoaded", function () {
 
     //declarate  proses of dragging event
     swipeMove(event) {
-
-
       if (this.swiping) {
         if (this.previous) {
 
-            this.left = parseInt(this.carouselOptions.carouselList.style.left || 0) + ( event.clientX - this.previous  ) * 2; //get the meaning of our movement
+          this.left = parseInt(this.carouselOptions.carouselList.style.left || 0) + ( event.clientX - this.previous  ) * 2; //get the meaning of our movement
 
-            if (this.left >= 0) {
-              this.left = 0;
-            } else if (this.carouselWidth < Math.abs(this.left)) {
-              this.left = 0;
-            }
-            this.carouselOptions.carouselList.style.left = this.left + 'px';
+          if (this.left >= 0) {
+            this.left = 0;
+          } else if (this.carouselWidth < Math.abs(this.left)) {
+            this.left = 0;
+          }
+          this.carouselOptions.carouselList.style.left = this.left + 'px';
 
         }
-          this.previous = event.clientX;
-        }
-        event.preventDefault()
+        this.previous = event.clientX;
+      }
+      event.preventDefault()
 
     }
 
     //end  proses of dragging event;  expect the final position
     swipeEnd() {
-
-      if (Math.abs(this.startX - this.previous) !== this.startX) {
+      if (Math.abs(this.startX - this.previous) !== this.startX && this.previous !== null) {
 
         this.carouselSwipe = Math.abs(parseFloat(getComputedStyle(this.carouselOptions.carouselList).left));// get value of swipe
         this.item = (this.carouselSwipe / this.carouselOptions.itemWidth) | 0 || 0; // get current item
@@ -113,7 +110,6 @@ document.addEventListener("DOMContentLoaded", function () {
         this.swiping = false;
 
       } else {
-        this.carouselOptions.carouselList.style.left = -Math.abs(this.item * this.carouselOptions.itemWidth) + 'px';// expect the final position
 
         this.previous = null;
         this.swiping = false;
