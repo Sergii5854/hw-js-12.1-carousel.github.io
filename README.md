@@ -4,11 +4,13 @@
 ## Usage
 
 ```html
-    <div class="your__selector">        
-        <img src="./images/slide1.jpg">
-        <img src="./images/slide3.jpg">
-        <img src="./images/slide4.jpg">
-        <img src="./images/slide4.jpg">       
+    <div class="your__selector">    
+        <div class="carousel__display">
+            <img src="./images/slide1.jpg">
+            <img src="./images/slide3.jpg">
+            <img src="./images/slide4.jpg">
+            <img src="./images/slide4.jpg">  
+        </div>
     </div>
 ```
 
