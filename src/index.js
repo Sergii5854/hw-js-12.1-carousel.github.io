@@ -71,35 +71,36 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     //end  proses of dragging event;  expect the final position
     swipeEnd() {
-      this.carouselSwipe = Math.abs(parseFloat(getComputedStyle(this.carouselList).left));// get value of swipe
-      this.item = (this.carouselSwipe / this.itemWidth) | 0 || 0; // get current item
+      if (this.swiping) {
+        this.carouselSwipe = Math.abs(parseFloat(getComputedStyle(this.carouselList).left));// get value of swipe
+        this.item = (this.carouselSwipe / this.itemWidth) | 0 || 0; // get current item
 
-      if (this.carouselSwipe >= this.carouselWidth) {
-        this.item = 0;
-        this.carouselList.style.left = '0px';
+        if (this.carouselSwipe >= this.carouselWidth) {
+          this.item = 0;
+          this.carouselList.style.left = '0px';
+          this.swiping = false;
+        }
+
+        if (this.carouselSwipe <= 0) {
+          this.item = this.carouselLength - 1;
+          this.carouselList.style.left = this.carouselWidth + 'px';
+          this.swiping = false;
+        }
+        // swiping function
+        if (event.touches) {
+          (event.pageX < this.startX)
+              ? this.controls('left')
+              : this.controls('right')
+        } else {
+          (event.pageX < this.startX)
+              ? this.controls('left')
+              : this.controls('right')
+        }
+
+        this.carouselList.style.left = -Math.abs(this.item * this.itemWidth) + 'px';// expect the final position
+        this.previous = null;
         this.swiping = false;
       }
-
-      if (this.carouselSwipe <= 0) {
-        this.item = this.carouselLength - 1;
-        this.carouselList.style.left = this.carouselWidth + 'px';
-        this.swiping = false;
-      }
-      // swiping function
-      if (event.touches) {
-        (event.pageX < this.startX)
-            ? this.controls('left')
-            : this.controls('right')
-      } else {
-        (event.pageX < this.startX)
-            ? this.controls('left')
-            : this.controls('right')
-      }
-
-      this.carouselList.style.left = -Math.abs(this.item * this.itemWidth) + 'px';// expect the final position
-      this.previous = null;
-      this.swiping = false;
-
     }
     // swipe event
     controls(direction) {
